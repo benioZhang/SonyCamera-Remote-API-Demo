@@ -1470,9 +1470,9 @@ public class SampleCameraActivity extends Activity {
         int height = getResources().getDisplayMetrics().heightPixels;
         final float x = xDown / width * 100;
         final float y = yDown / height * 100;
-        Log.d(TAG, "width :" + width + " height :" + height + "xDown :" + xDown + " yDown :" + yDown + "  x:" + x + " y:" + y);
 
-//        mLiveviewSurface.setFocusFrame((int) xDown, (int) yDown);
+        mLiveviewSurface.drawFocusFrame((int) xDown, (int) yDown);
+        
         new Thread() {
 
             @Override

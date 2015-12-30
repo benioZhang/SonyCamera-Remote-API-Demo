@@ -31,6 +31,10 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
 
     private static final String TAG = SimpleStreamSurfaceView.class.getSimpleName();
 
+    private static final int FOCUS_FRAME_SIZE = 80;
+
+    private static final int FOCUS_FRAME_TIME = 1500;
+
     private boolean mWhileFetching;
 
     private final BlockingQueue<byte[]> mJpegQueue = new ArrayBlockingQueue<byte[]>(2);
@@ -43,7 +47,17 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
 
     private int mPreviousHeight = 0;
 
+    private int mDownX;
+
+    private int mDownY;
+
+    private int mFocusFrameSize;
+
+    private long mFocusTime;
+
     private final Paint mFramePaint;
+
+    private final Paint mFocusFramePaint;
 
     private StreamErrorListener mErrorListener;
 
@@ -53,10 +67,7 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
      * @param context
      */
     public SimpleStreamSurfaceView(Context context) {
-        super(context);
-        getHolder().addCallback(this);
-        mFramePaint = new Paint();
-        mFramePaint.setDither(true);
+        this(context, null);
     }
 
     /**
@@ -66,10 +77,7 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
      * @param attrs
      */
     public SimpleStreamSurfaceView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        getHolder().addCallback(this);
-        mFramePaint = new Paint();
-        mFramePaint.setDither(true);
+        this(context, attrs, 0);
     }
 
     /**
@@ -84,6 +92,11 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
         getHolder().addCallback(this);
         mFramePaint = new Paint();
         mFramePaint.setDither(true);
+
+        mFocusFramePaint = new Paint();
+        mFocusFramePaint.setColor(Color.GREEN);
+        mFocusFramePaint.setStyle(Paint.Style.STROKE);
+        mFocusFramePaint.setStrokeWidth(3);
     }
 
     @Override
@@ -227,24 +240,28 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
         return mWhileFetching;
     }
 
-
-    private int mDownX;
-    private int mDownY;
-    private int mPreviousX;
-    private int mmPreviousY;
-
-    private long mFoucusTime;
-
     /**
      * Draw focus frame onto a canvas.
      *
      * @param xDown
      * @param yDown
      */
-    public void setFocusFrame(int xDown, int yDown) {
-        mFoucusTime = System.currentTimeMillis();
+    public void drawFocusFrame(int xDown, int yDown) {
+        drawFocusFrame(xDown, yDown, FOCUS_FRAME_SIZE);
+    }
+
+    /**
+     * Draw focus frame onto a canvas.
+     *
+     * @param xDown
+     * @param yDown
+     * @param size
+     */
+    public void drawFocusFrame(int xDown, int yDown, int size) {
+        mFocusTime = System.currentTimeMillis();
         mDownX = xDown;
         mDownY = yDown;
+        mFocusFrameSize = size;
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
@@ -281,18 +298,6 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
             return;
         }
 
-//        if (System.currentTimeMillis() - mFoucusTime < 1000) {
-//            Paint paint = new Paint();
-//            paint.setColor(Color.BLUE);
-////            canvas.drawCircle(mDownX, mDownY, 50, paint);
-//            int width = 50;
-//            int left = mDownX - width;
-//            int right = mDownX + width;
-//            int top = mDownY + width;
-//            int bottom = mDownY - width;
-//            canvas.drawRect(left, top, right, bottom, paint);
-//        }
-
         int w = frame.getWidth();
         int h = frame.getHeight();
         Rect src = new Rect(0, 0, w, h);
@@ -302,6 +307,18 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
         int offsetY = (getHeight() - (int) (h * by)) / 2;
         Rect dst = new Rect(offsetX, offsetY, getWidth() - offsetX, getHeight() - offsetY);
         canvas.drawBitmap(frame, src, dst, mFramePaint);
+
+
+        if (System.currentTimeMillis() - mFocusTime < FOCUS_FRAME_TIME) {
+            int width = mFocusFrameSize;
+            int left = mDownX - width;
+            int top = mDownY - width;
+            int right = mDownX + width;
+            int bottom = mDownY + width;
+            canvas.drawRect(left, top, right, bottom, mFocusFramePaint);
+        } else {
+            mFocusTime = -1;
+        }
 
         getHolder().unlockCanvasAndPost(canvas);
     }
