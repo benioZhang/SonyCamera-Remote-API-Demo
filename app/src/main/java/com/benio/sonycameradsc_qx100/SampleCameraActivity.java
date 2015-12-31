@@ -8,6 +8,7 @@ package com.benio.sonycameradsc_qx100;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -1471,8 +1472,10 @@ public class SampleCameraActivity extends Activity {
         final float x = xDown / width * 100;
         final float y = yDown / height * 100;
 
+        //reset focus frame color
+        mLiveviewSurface.setFocusFrameColor(Color.WHITE);
         mLiveviewSurface.drawFocusFrame((int) xDown, (int) yDown);
-        
+
         new Thread() {
 
             @Override
@@ -1484,6 +1487,7 @@ public class SampleCameraActivity extends Activity {
                     if (resultCode == 0) {
                         JSONObject afObj = resultsObj.getJSONObject(1);
                         boolean success = afObj.getBoolean("AFResult");
+                        mLiveviewSurface.setFocusFrameColor(success ? Color.GREEN : Color.WHITE);
                         DisplayHelper.toast(getApplicationContext(), success ? R.string.msg_set_af_success : R.string.msg_set_af_failed);
                         Log.i(TAG, "setTouchAFPosition: AFResult:" + success);
                     } else {

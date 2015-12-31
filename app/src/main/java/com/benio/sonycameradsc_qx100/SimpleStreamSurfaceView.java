@@ -13,6 +13,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -33,7 +35,7 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
 
     private static final int FOCUS_FRAME_SIZE = 80;
 
-    private static final int FOCUS_FRAME_TIME = 1500;
+    private static final int FOCUS_FRAME_TIME = 2000;
 
     private boolean mWhileFetching;
 
@@ -47,13 +49,13 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
 
     private int mPreviousHeight = 0;
 
-    private int mDownX;
+    private int mDownX = 0;
 
-    private int mDownY;
+    private int mDownY = 0;
 
     private int mFocusFrameSize;
 
-    private long mFocusTime;
+    private long mFocusTime = 0;
 
     private final Paint mFramePaint;
 
@@ -94,7 +96,7 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
         mFramePaint.setDither(true);
 
         mFocusFramePaint = new Paint();
-        mFocusFramePaint.setColor(Color.GREEN);
+        mFocusFramePaint.setColor(Color.WHITE);
         mFocusFramePaint.setStyle(Paint.Style.STROKE);
         mFocusFramePaint.setStrokeWidth(3);
     }
@@ -251,6 +253,15 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
     }
 
     /**
+     * Draw focus result.
+     *
+     * @param color
+     */
+    public void setFocusFrameColor(int color) {
+        mFocusFramePaint.setColor(color);
+    }
+
+    /**
      * Draw focus frame onto a canvas.
      *
      * @param xDown
@@ -308,7 +319,17 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
         Rect dst = new Rect(offsetX, offsetY, getWidth() - offsetX, getHeight() - offsetY);
         canvas.drawBitmap(frame, src, dst, mFramePaint);
 
+        drawFocusFrame(canvas);
 
+        getHolder().unlockCanvasAndPost(canvas);
+    }
+
+    /**
+     * Draw focus frame onto a canvas.
+     *
+     * @param canvas
+     */
+    private void drawFocusFrame(Canvas canvas) {
         if (System.currentTimeMillis() - mFocusTime < FOCUS_FRAME_TIME) {
             int width = mFocusFrameSize;
             int left = mDownX - width;
@@ -316,11 +337,7 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
             int right = mDownX + width;
             int bottom = mDownY + width;
             canvas.drawRect(left, top, right, bottom, mFocusFramePaint);
-        } else {
-            mFocusTime = -1;
         }
-
-        getHolder().unlockCanvasAndPost(canvas);
     }
 
     /**
