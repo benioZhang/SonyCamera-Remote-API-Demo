@@ -201,7 +201,7 @@ public class SampleCameraActivity extends Activity {
                     upTime = System.currentTimeMillis();
                 }
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if (System.currentTimeMillis() - upTime > 500) {
+                    if (System.currentTimeMillis() - upTime > 1000) {
                         setTouchAFPosition(event.getX(), event.getY());
                     }
                 }
@@ -1474,7 +1474,7 @@ public class SampleCameraActivity extends Activity {
 
         //reset focus frame color
         mLiveviewSurface.setFocusFrameColor(Color.WHITE);
-        mLiveviewSurface.drawFocusFrame((int) xDown, (int) yDown);
+        mLiveviewSurface.showFocusFrame((int) xDown, (int) yDown);
 
         new Thread() {
 

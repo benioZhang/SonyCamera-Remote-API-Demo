@@ -13,8 +13,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -248,8 +246,8 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
      * @param xDown
      * @param yDown
      */
-    public void drawFocusFrame(int xDown, int yDown) {
-        drawFocusFrame(xDown, yDown, FOCUS_FRAME_SIZE);
+    public void showFocusFrame(int xDown, int yDown) {
+        showFocusFrame(xDown, yDown, FOCUS_FRAME_SIZE);
     }
 
     /**
@@ -268,7 +266,7 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
      * @param yDown
      * @param size
      */
-    public void drawFocusFrame(int xDown, int yDown, int size) {
+    public void showFocusFrame(int xDown, int yDown, int size) {
         mFocusTime = System.currentTimeMillis();
         mDownX = xDown;
         mDownY = yDown;
