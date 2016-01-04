@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.List;
 
 /**
  * A parser class for Liveview data Packet defined by Camera Remote API
@@ -36,8 +35,6 @@ public class SimpleLiveviewSlicer {
          */
         public final byte[] paddingData;
 
-        private List<Frame> frames;
-
         public final Frame frame;
 
         /**
@@ -53,14 +50,6 @@ public class SimpleLiveviewSlicer {
             this.frame = frame;
             this.paddingData = padding;
             this.jpegData = null;
-        }
-
-        public List<Frame> getFrames() {
-            return frames;
-        }
-
-        public void setFrames(List<Frame> frames) {
-            this.frames = frames;
         }
     }
 
@@ -86,18 +75,6 @@ public class SimpleLiveviewSlicer {
             this.point2 = point2;
             this.category = category;
             this.status = status;
-        }
-
-        private Frame(byte[] frameData) {
-            int x1 = bytesToInt(frameData, 2, 2);
-            int y1 = bytesToInt(frameData, 0, 2);
-            int x2 = bytesToInt(frameData, 6, 2);
-            int y2 = bytesToInt(frameData, 4, 2);
-            category = bytesToInt(frameData, 8, 1);
-            status = bytesToInt(frameData, 9, 1);
-            point1 = new Point(x1, y1);
-            point2 = new Point(x2, y2);
-            Log.d(TAG, "x1: " + x1 + " y1: " + y1 + " x2: " + x2 + " y2:" + y2 + " category: " + category + " status: " + status);
         }
     }
 
@@ -225,7 +202,6 @@ public class SimpleLiveviewSlicer {
             int frameCount = bytesToInt(payloadHeader, 10, 2);
             int singleFrameSize = bytesToInt(payloadHeader, 12, 2);
 
-            Log.d(TAG, "frameCount: " + frameCount + " singleFrameSize: " + singleFrameSize);
             if (frameData == null || frameData.length != frameCount * singleFrameSize) {
                 throw new IOException("Unexpected data format.(Frame information data)");
             }

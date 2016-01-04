@@ -33,7 +33,7 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
 
     private static final int FOCUS_FRAME_SIZE = 80;
 
-    private static final int FOCUS_FRAME_TIME = 2000;
+    private static final int FOCUS_FRAME_TIME = 1500;
 
     private boolean mWhileFetching;
 
@@ -256,7 +256,9 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
      * @param color
      */
     public void setFocusFrameColor(int color) {
-        mFocusFramePaint.setColor(color);
+        if (mFocusFramePaint.getColor() != color) {
+            mFocusFramePaint.setColor(color);
+        }
     }
 
     /**
@@ -307,6 +309,7 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
             return;
         }
 
+        // Draw frame bitmap
         int w = frame.getWidth();
         int h = frame.getHeight();
         Rect src = new Rect(0, 0, w, h);
@@ -317,25 +320,31 @@ public class SimpleStreamSurfaceView extends SurfaceView implements SurfaceHolde
         Rect dst = new Rect(offsetX, offsetY, getWidth() - offsetX, getHeight() - offsetY);
         canvas.drawBitmap(frame, src, dst, mFramePaint);
 
-        drawFocusFrame(canvas);
-
-        getHolder().unlockCanvasAndPost(canvas);
-    }
-
-    /**
-     * Draw focus frame onto a canvas.
-     *
-     * @param canvas
-     */
-    private void drawFocusFrame(Canvas canvas) {
+        // Draw focus frame onto a canvas.
         if (System.currentTimeMillis() - mFocusTime < FOCUS_FRAME_TIME) {
-            int width = mFocusFrameSize;
-            int left = mDownX - width;
-            int top = mDownY - width;
-            int right = mDownX + width;
-            int bottom = mDownY + width;
+            int size = mFocusFrameSize;
+
+            if (mDownX - size <= offsetX) {
+                mDownX = offsetX + size + 2;
+            } else if (mDownX + size >= getWidth() - offsetX) {
+                mDownX = getWidth() - offsetX - size - 2;
+            }
+
+            if (mDownY - size <= offsetY) {
+                mDownY = offsetY + size + 2;
+            } else if (mDownY + size >= getHeight() - offsetY) {
+                mDownY = getHeight() - offsetY - size - 2;
+            }
+
+            int left = mDownX - size;
+            int top = mDownY - size;
+            int right = mDownX + size;
+            int bottom = mDownY + size;
+
             canvas.drawRect(left, top, right, bottom, mFocusFramePaint);
         }
+
+        getHolder().unlockCanvasAndPost(canvas);
     }
 
     /**

@@ -201,7 +201,7 @@ public class SampleCameraActivity extends Activity {
                     upTime = System.currentTimeMillis();
                 }
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if (System.currentTimeMillis() - upTime > 1000) {
+                    if (System.currentTimeMillis() - upTime > 2000) {
                         setTouchAFPosition(event.getX(), event.getY());
                     }
                 }
@@ -1466,21 +1466,21 @@ public class SampleCameraActivity extends Activity {
      * @param xDown
      * @param yDown
      */
-    private void setTouchAFPosition(float xDown, float yDown) {
+    private void setTouchAFPosition(final float xDown, final float yDown) {
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
         final float x = xDown / width * 100;
         final float y = yDown / height * 100;
-
-        //reset focus frame color
-        mLiveviewSurface.setFocusFrameColor(Color.WHITE);
-        mLiveviewSurface.showFocusFrame((int) xDown, (int) yDown);
 
         new Thread() {
 
             @Override
             public void run() {
                 try {
+                    //reset focus frame color
+                    mLiveviewSurface.setFocusFrameColor(Color.WHITE);
+                    mLiveviewSurface.showFocusFrame((int) xDown, (int) yDown);
+
                     JSONObject replyJson = mRemoteApi.setTouchAFPosition(x, y);
                     JSONArray resultsObj = replyJson.getJSONArray("result");
                     int resultCode = resultsObj.getInt(0);
@@ -1488,7 +1488,6 @@ public class SampleCameraActivity extends Activity {
                         JSONObject afObj = resultsObj.getJSONObject(1);
                         boolean success = afObj.getBoolean("AFResult");
                         mLiveviewSurface.setFocusFrameColor(success ? Color.GREEN : Color.WHITE);
-                        DisplayHelper.toast(getApplicationContext(), success ? R.string.msg_set_af_success : R.string.msg_set_af_failed);
                         Log.i(TAG, "setTouchAFPosition: AFResult:" + success);
                     } else {
                         Log.e(TAG, "setTouchAFPosition: error: " + resultCode);
