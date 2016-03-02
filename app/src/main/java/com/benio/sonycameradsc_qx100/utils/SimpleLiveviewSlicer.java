@@ -4,7 +4,6 @@
 
 package com.benio.sonycameradsc_qx100.utils;
 
-import android.graphics.Point;
 import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
@@ -35,46 +34,12 @@ public class SimpleLiveviewSlicer {
          */
         public final byte[] paddingData;
 
-        public final Frame frame;
-
         /**
          * Constructor
          */
         private Payload(byte[] jpeg, byte[] padding) {
             this.jpegData = jpeg;
             this.paddingData = padding;
-            frame = null;
-        }
-
-        private Payload(Frame frame, byte[] padding) {
-            this.frame = frame;
-            this.paddingData = padding;
-            this.jpegData = null;
-        }
-    }
-
-    public static final class Frame {
-        public static final int STATUS_FOCUSED = 0x04;
-
-        public static final int CATEGORY_CONTRAST_AF = 0x01;
-        public static final int CATEGORY_PHASE_DETECTION_AF = 0x02;
-        public static final int CATEGORY_FACE = 0x04;
-        public static final int CATEGORY_TRACKING = 0x05;
-
-        public final Point point1;
-        public final Point point2;
-        public final int category;
-        public final int status;
-
-        public boolean isAF() {
-            return category == CATEGORY_CONTRAST_AF || category == CATEGORY_PHASE_DETECTION_AF;
-        }
-
-        private Frame(Point point1, Point point2, int category, int status) {
-            this.point1 = point1;
-            this.point2 = point2;
-            this.category = category;
-            this.status = status;
         }
     }
 
@@ -149,18 +114,13 @@ public class SimpleLiveviewSlicer {
                 case (byte) 0x02:// For Liveview Frame Information
                     // This is information header for Liveview.
                     // skip this packet.
-//                    readLength = 4 + 3 + 1 + 2 + 2 + 2 + 114 + 4 + 4 + 1 + 1 + 1 + 5;
                     commonHeader = null;
-                    Log.d(TAG, "Liveview information header ");
-//                    readBytes(mInputStream, readLength);
-                    readLiveviewPayload();
+                    readPayload();
                     break;
                 case (byte) 0x01:// For liveview images
-                    Log.d(TAG, "liveview images");
                     payload = readPayload();
                     break;
                 case (byte) 0x11:// For Streaming Images
-                    Log.d(TAG, "Streaming images");
                     payload = readPayload();
                     break;
                 case (byte) 0x12://For Streaming Playback Information
@@ -168,7 +128,6 @@ public class SimpleLiveviewSlicer {
                     // skip this packet.
                     readLength = 4 + 3 + 1 + 2 + 118 + 4 + 4 + 24;
                     commonHeader = null;
-                    Log.d(TAG, "Streaming information header ");
                     readBytes(mInputStream, readLength);
                     break;
                 default:
@@ -206,15 +165,7 @@ public class SimpleLiveviewSlicer {
                 throw new IOException("Unexpected data format.(Frame information data)");
             }
 
-            Frame frame = null;
-            for (int i = 0; i < frameCount; i++) {
-                Frame f = readFrame(frameData, i * singleFrameSize);
-                if (f.isAF()) {
-                    frame = f;
-                }
-            }
-
-            return new Payload(frame, paddingData);
+            return new Payload(frameData, paddingData);
         }
         return null;
     }
@@ -294,18 +245,5 @@ public class SimpleLiveviewSlicer {
         byte[] ret = tmpByteArray.toByteArray();
         tmpByteArray.close();
         return ret;
-    }
-
-    private static Frame readFrame(byte[] frameData, int startIndex) {
-        int x1 = bytesToInt(frameData, startIndex, 2);
-        int y1 = bytesToInt(frameData, startIndex + 2, 2);
-        int x2 = bytesToInt(frameData, startIndex + 4, 2);
-        int y2 = bytesToInt(frameData, startIndex + 6, 2);
-        int category = bytesToInt(frameData, startIndex + 8, 1);
-        int status = bytesToInt(frameData, startIndex + 9, 1);
-        Point point1 = new Point(x1, y1);
-        Point point2 = new Point(x2, y2);
-        Log.d(TAG, "x1: " + x1 + " y1: " + y1 + " x2: " + x2 + " y2:" + y2 + " category: " + category + " status: " + status);
-        return new Frame(point1, point2, category, status);
     }
 }

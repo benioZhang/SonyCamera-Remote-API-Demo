@@ -529,12 +529,6 @@ public class SampleCameraActivity extends Activity {
                         startLiveview();
                     }
 
-                    // Liveview frame
-                    if (isCameraApiAvailable("setLiveviewFrameInfo")) {
-                        Log.d(TAG, "openConnection(): LiveviewSurface.start()");
-                        setLiveviewFrameInfo(false);
-                    }
-
                     // prepare UIs
                     if (isCameraApiAvailable("getAvailableShootMode")) {
                         Log.d(TAG, "openConnection(): prepareShootModeSpinner()");
@@ -1497,31 +1491,6 @@ public class SampleCameraActivity extends Activity {
                     Log.w(TAG, "setTouchAFPosition: IOException: " + e.getMessage());
                 } catch (JSONException e) {
                     Log.w(TAG, "setTouchAFPosition: JSON format error.");
-                }
-            }
-        }.start();
-    }
-
-    /**
-     * Call setLiveviewFrameInfo
-     *
-     * @param frameInfo
-     */
-    private void setLiveviewFrameInfo(final boolean frameInfo) {
-        new Thread() {
-
-            @Override
-            public void run() {
-                try {
-                    JSONObject replyJson = mRemoteApi.setLiveviewFrameInfo(frameInfo);
-                    if (SimpleRemoteApi.isErrorReply(replyJson)) {
-                        Log.w(TAG, "setLiveviewFrameInfo error:" + replyJson.toString());
-                        DisplayHelper.toast(getApplicationContext(), R.string.msg_error_content);
-                    } else {
-                        Log.v(TAG, "setLiveviewFrameInfo: success");
-                    }
-                } catch (IOException e) {
-                    Log.w(TAG, "setLiveviewFrameInfo: IOException: " + e.getMessage());
                 }
             }
         }.start();
