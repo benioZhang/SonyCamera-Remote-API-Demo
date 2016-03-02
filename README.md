@@ -1,17 +1,17 @@
 # SonyCamera-Remote-API-Demo
-¶ÔSony Camera½øĞĞ¿ª·¢¡£²Î¿¼¹Ù·½Demo.¹ÙÍø:[https://developer.sony.com/develop/cameras/]
-ĞèÒª×¢ÒâµÄÊÇ²»Í¬»úĞÍµÄCamera¶ÔAPIµÄÖ§³ÖÊÇ²»Ò»ÑùµÄ¡£
+* å¯¹Sony Cameraè¿›è¡Œå¼€å‘ã€‚å‚è€ƒå®˜æ–¹Demo.[é“¾æ¥](https://developer.sony.com/develop/cameras/)
+* éœ€è¦æ³¨æ„çš„æ˜¯ä¸åŒæœºå‹çš„Cameraå¯¹APIçš„æ”¯æŒæ˜¯ä¸ä¸€æ ·çš„ã€‚
 
-## ÊµÏÖ¹¦ÄÜ
-* µ÷ÓÃÅÄÉãÄ£Ê½
-* Ô¶³ÌÅÄÕÕ
-* ÉãÏñ¹¦ÄÜ
-* ÊµÊ±»­Ãæ
-* ±ä½¹
-* ´¥Ãş×Ô¶¯¶Ô½¹
-* ISOÉèÖÃ
-* ¿ìÃÅÉèÖÃ
-* Í¼ÏñÔ¤ÀÀ
-* Í¼Ïñ/ÊÓÆµ´«ÊäºÍ±£´æ
+## å®ç°åŠŸèƒ½
+* è°ƒç”¨æ‹æ‘„æ¨¡å¼
+* è¿œç¨‹æ‹ç…§
+* æ‘„åƒåŠŸèƒ½
+* å®æ—¶ç”»é¢
+* å˜ç„¦
+* è§¦æ‘¸è‡ªåŠ¨å¯¹ç„¦
+* ISOè®¾ç½®
+* å¿«é—¨è®¾ç½®
+* å›¾åƒé¢„è§ˆ
+* å›¾åƒ/è§†é¢‘ä¼ è¾“å’Œä¿å­˜
 
-¾ßÌåAPI¿É²Î¿¼[APIÎÄµµ](https://github.com/benioZhang/SonyCamera-Remote-API-Demo/blob/master/Sony_CameraRemoteAPIbeta_API-Reference_v2.10.pdf)
+å…·ä½“APIå¯å‚è€ƒ[APIæ–‡æ¡£](https://github.com/benioZhang/SonyCamera-Remote-API-Demo/blob/master/Sony_CameraRemoteAPIbeta_API-Reference_v2.10.pdf)
